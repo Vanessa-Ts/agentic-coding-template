@@ -107,18 +107,18 @@ CMD ["pytest", "tests/", \
      "--junitxml=report.xml"]
 
 
-# Prod - uncomment when ready to deploy
+# Prod 
 # ============================================================
-# FROM base AS production
-#
-# COPY --from=builder /app/.venv /app/.venv
-# COPY src/ ./src/
-#
-# USER appuser
-#
-# ENV PYTHONDONTWRITEBYTECODE=1 \
-#     PYTHONUNBUFFERED=1
-#
-# EXPOSE 8000
-#
-# CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]
+FROM base AS production
+
+COPY --from=builder /app/.venv /app/.venv
+COPY src/ ./src/
+
+USER appuser
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+EXPOSE 8000
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]
