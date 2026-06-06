@@ -1,12 +1,27 @@
-from fastapi.testclient import TestClient
+from httpx import ASGITransport, AsyncClient
+
 from app.main import app
 
-client = TestClient(app)
 
-def test_index_returns_200():
-    response = client.get("/")
-    assert response.status_code == 200
+async def test_index_returns_200() -> None:
+    async with AsyncClient(
+        transport=ASGITransport(app=app), base_url="http://test"
+    ) as c:
+        r = await c.get("/")
+    assert r.status_code == 200
 
-def test_index_contains_app_name():
-    response = client.get("/")
-    assert "docker-dev-template" in response.text
+
+async def test_index_contains_app_name() -> None:
+    async with AsyncClient(
+        transport=ASGITransport(app=app), base_url="http://test"
+    ) as c:
+        r = await c.get("/")
+    assert "agentic-coding-template" in r.text
+
+
+async def test_index_not_found() -> None:
+    async with AsyncClient(
+        transport=ASGITransport(app=app), base_url="http://test"
+    ) as c:
+        r = await c.get("/nonexistent-route")
+    assert r.status_code == 404

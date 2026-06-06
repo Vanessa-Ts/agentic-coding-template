@@ -1,6 +1,11 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
 [project]
-name = "docker-dev-template"
-version = "0.2.1"
+name = "agentic-coding-template"
+version = "0.1.0"
 requires-python = ">=3.11,<3.14"
 authors = [{name = "VanessaTs"}]
 dependencies = [
@@ -63,6 +68,10 @@ line-length = 88
 [tool.ruff.lint]
 select = ["E", "F", "W", "S"]
 ignore = ["E402"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101"]
+".claude/hooks/**" = ["S101", "S603", "S607"]
 
 
 [tool.mypy]

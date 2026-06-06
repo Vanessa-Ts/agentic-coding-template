@@ -4,8 +4,8 @@ services:
       context: .
       dockerfile: Dockerfile
       target: development
-    container_name: docker-dev-template
-    image: docker-dev-template:local
+    container_name: agentic-coding-template
+    image: agentic-coding-template:local
     security_opt:
       - no-new-privileges:true
     volumes:
@@ -34,8 +34,8 @@ services:
   #     context: .
   #     dockerfile: Dockerfile
   #     target: production
-  #   container_name: docker-dev-template-prod
-  #   image: docker-dev-template:prod
+  #   container_name: agentic-coding-template-prod
+  #   image: agentic-coding-template:prod
   #   profiles: ["prod"]
   #   security_opt:
   #     - no-new-privileges:true

@@ -29,9 +29,7 @@ WORKDIR /app
 ENV UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
     PATH="/app/.venv/bin:$PATH" \
-    UV_PROJECT_ENVIRONMENT=/app/.venv \
-    PYTHONPATH="/app/src"
-
+    UV_PROJECT_ENVIRONMENT=/app/.venv
 
 
 # Deps
@@ -67,17 +65,18 @@ RUN uv sync --frozen --no-dev --no-cache
 FROM base AS development
 
 COPY --from=deps /app/.venv /app/.venv
+
 COPY pyproject.toml uv.lock ./
+COPY src/ ./src/
 
-# Stub for the extra group install
-RUN mkdir -p src/app && \
-    touch src/app/__init__.py
+RUN chown -R appuser:appuser /app
+USER appuser
 
-# Layer on dev deps (pytest, ruff, mypy, etc. — torch already in venv)
-RUN uv sync --frozen --no-install-project --group dev && \
+RUN uv sync --frozen --group dev && \
     uv cache clean
 
-USER appuser
+RUN curl -fsSL https://claude.ai/install.sh | bash
+RUN echo 'unset VIRTUAL_ENV' >> /home/appuser/.bashrc
 ENV PATH="/home/appuser/.local/bin:$PATH"
 
 CMD ["sleep", "infinity"]
@@ -92,14 +91,11 @@ COPY pyproject.toml uv.lock ./
 
 ENV UV_COMPILE_BYTECODE=0
 
-RUN mkdir -p src/app && \
-    touch src/app/__init__.py
+COPY src/ ./src/
+COPY tests/ ./tests/
 
 RUN uv sync --frozen --no-cache --group test && \
     uv cache clean
-
-COPY src/ ./src/
-COPY tests/ ./tests/
 
 USER appuser
 
@@ -123,6 +119,6 @@ CMD ["pytest", "tests/", \
 # ENV PYTHONDONTWRITEBYTECODE=1 \
 #     PYTHONUNBUFFERED=1
 #
-# EXPOSE 8080
+# EXPOSE 8000
 #
-# CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080", "--workers", "2"]
+# CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]
