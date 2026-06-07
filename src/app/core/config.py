@@ -1,5 +1,6 @@
 import logging
 from functools import lru_cache
+from importlib.metadata import version as _pkg_version
 from typing import Literal
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -12,7 +13,7 @@ class Settings(BaseSettings):
         case_sensitive=False,
     )
     app_name: str = "agentic-coding-template"
-    version: str = "0.1.1"
+    version: str = _pkg_version("agentic-coding-template")
     environment: Literal["development", "staging", "production"] = "development"
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = "DEBUG"
 
