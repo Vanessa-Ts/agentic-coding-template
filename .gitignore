@@ -111,5 +111,10 @@ venv.bak/
 /site
 
 
+# Claude
+.claude/settings.local.json
+.claude/state/
+docs/plans/
+
 # Project-specific
 TODO.md

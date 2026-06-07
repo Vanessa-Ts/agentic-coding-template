@@ -1,13 +1,17 @@
 {
-    "name": "Docker Development Template",
+    "name": "Agentic Coding Template",
     "dockerComposeFile": ["../docker-compose.yml"],
     "service": "app",
     "workspaceFolder": "/app",
     "shutdownAction": "stopCompose",
+    "mounts": [
+        "source=claude-code-config-${devcontainerId},target=/home/appuser/.claude,type=volume"
+    ],
     "remoteUser": "appuser",
     "customizations": {
         "vscode": {
             "extensions": [
+                "anthropic.claude-code",
                 "ms-python.python",
                 "ms-python.vscode-pylance",
                 "ms-python.debugpy",
