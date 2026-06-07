@@ -1,5 +1,6 @@
 ---
 name: quality-reviewer
+description: Read-only agent that reviews code quality, style, and CLAUDE.md compliance. Invoke via /review.
 model: claude-haiku-4-5-20251001
 tools:
   - Read
