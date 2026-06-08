@@ -84,12 +84,15 @@ jobs:
         uses: actions/checkout@v6.0.3
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v4
+        uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
 
       - name: Install dependencies
         run: uv sync --frozen --group dev
+
+      - name: Add venv to PATH
+        run: echo "$GITHUB_WORKSPACE/.venv/bin" >> $GITHUB_PATH
 
       - name: Phase 1 — agent/skill/command structural lint
         run: pytest evals/test_structural.py -v --tb=short --no-cov
