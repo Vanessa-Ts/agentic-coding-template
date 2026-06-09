@@ -1,6 +1,6 @@
 # Agentic Workflow
 
-This document explains how the Research→Plan→Execute→Review→Ship loop works, when to escalate to a more powerful model, the hook system, and the self-correcting review loop.
+This document explains how the Spec→Plan→Implement→Review→Ship loop works, when to escalate to a more powerful model, the hook system, and the self-correcting review loop.
 
 ---
 
@@ -8,9 +8,9 @@ This document explains how the Research→Plan→Execute→Review→Ship loop wo
 
 ```
 ┌─────────────┐
-│  Research   │  Read codebase, open questions, understand context
+│    Spec     │  describe feature  →  spec-feature skill  →  docs/specs/<feature>.md
 └──────┬──────┘
-       │
+       │  (skip for well-understood changes)
        ▼
 ┌─────────────┐
 │    Plan     │  /plan <feature>  →  planner agent  →  docs/plans/<feature>.md
@@ -32,14 +32,21 @@ This document explains how the Research→Plan→Execute→Review→Ship loop wo
 └─────────────┘
 ```
 
-Each phase maps to a command:
+Each phase maps to a command or skill:
 
-| Phase | Command | Agent invoked |
-|---|---|---|
-| Plan | `/plan <feature>` | `planner` |
-| Execute | `/implement` | `implementer` |
-| Review | `/review` | `architecture-reviewer` + `performance-reviewer` + `security-reviewer` (parallel) |
-| Ship | `/ship` | none — runs shell commands directly |
+| Phase | Trigger | Agent / skill invoked | Output |
+|---|---|---|---|
+| Spec | describe feature naturally | `spec-feature` skill (auto-trigger) | `docs/specs/<feature>.md` |
+| Plan | `/plan <feature>` | `planner` | `docs/plans/<feature>.md` |
+| Execute | `/implement` | `implementer` | `feat/<name>` branch |
+| Review | `/review` | `architecture-reviewer` + `performance-reviewer` + `security-reviewer` (parallel) | violations or LGTM |
+| Ship | `/ship` | none — runs shell commands directly | PR |
+
+### When to spec
+
+Use the spec step when requirements are fuzzy, involve a new actor or user flow, or need alignment before implementation starts. The `spec-feature` skill runs a structured 6-question interview (who, what, why, acceptance criteria, edge cases, out of scope) and writes the result to `docs/specs/<feature>.md`. That file feeds the planner when you run `/plan`.
+
+Skip it for bug fixes, small additive changes, or anything where requirements are already fully captured.
 
 ---
 

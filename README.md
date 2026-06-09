@@ -1,6 +1,6 @@
 # agentic-coding-template
 
-A FastAPI service demonstrating senior-grade Claude Code patterns: typed agents, auto-trigger skills, inline push gate, and a full Research→Plan→Execute→Review→Ship loop.
+A FastAPI service demonstrating senior-grade Claude Code patterns: typed agents, auto-trigger skills, inline push gate, and a full Spec→Plan→Implement→Review→Ship loop.
 
 ---
 
@@ -11,6 +11,22 @@ docker compose up --build          # start dev container
 cp .env.template .env              # configure environment
 uv run uvicorn app.main:app --reload --app-dir src
 ```
+
+### Agentic loop
+
+```
+spec → plan → implement → review → ship
+```
+
+| Step | How to trigger | Output |
+|---|---|---|
+| **Spec** | Describe the feature in plain English — `spec-feature` skill auto-triggers | `docs/specs/<feature>.md` |
+| **Plan** | `/plan <feature>` | `docs/plans/<feature>.md` |
+| **Implement** | `/implement` | `feat/<name>` branch with code + tests |
+| **Review** | `/review` | Violations or LGTM from parallel reviewer agents |
+| **Ship** | `/ship` | Quality gate + PR |
+
+Skip the spec step for well-understood changes (bug fixes, small additive work). Use it when requirements are fuzzy or need alignment before any code is written — the skill runs a structured 6-question interview and records what was agreed.
 
 ---
 
