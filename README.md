@@ -34,7 +34,8 @@ uv run uvicorn app.main:app --reload --app-dir src
 |---|---|---|---|
 | `planner` | Sonnet 4.6 | `docs/plans/` | Reads codebase, writes implementation plan |
 | `implementer` | Sonnet 4.6 | `src/`, `tests/` | Turns plan into working code + tests |
-| `quality-reviewer` | Haiku 4.5 | none (read-only) | ruff/mypy/style/CLAUDE.md violations |
+| `architecture-reviewer` | Haiku 4.5 | none (read-only) |  |
+| `performance-reviewer` | Haiku 4.5 | none (read-only) |  |
 | `security-reviewer` | Haiku 4.5 | none (read-only) | Secrets, OWASP-lite, input validation |
 
 ---
@@ -69,7 +70,7 @@ See [.claude/hooks/README.md](.claude/hooks/README.md) for exit codes and how to
 |---|---|
 | `/plan <feature>` | Invokes `planner` → writes `docs/plans/<feature>.md` |
 | `/implement` | Reads latest plan, creates `feat/<name>` branch, builds code |
-| `/review` | Invokes `quality-reviewer` + `security-reviewer` in parallel |
+| `/review` | Invokes `architecture-reviewer`, `architecture-reviewer` and `security-reviewer` in parallel |
 | `/ship` | Runs quality gate, then `gh pr create` |
 
 ---

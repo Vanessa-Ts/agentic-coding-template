@@ -38,7 +38,7 @@ Each phase maps to a command:
 |---|---|---|
 | Plan | `/plan <feature>` | `planner` |
 | Execute | `/implement` | `implementer` |
-| Review | `/review` | `quality-reviewer` + `security-reviewer` (parallel) |
+| Review | `/review` | `architecture-reviewer` + `performance-reviewer` + `security-reviewer` (parallel) |
 | Ship | `/ship` | none — runs shell commands directly |
 
 ---
