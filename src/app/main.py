@@ -57,9 +57,9 @@ async def readiness() -> JSONResponse:
 @app.get("/", response_model=None, status_code=200)
 async def index(request: Request) -> Response:
     return templates.TemplateResponse(
+        request,
         "index.html",
         {
-            "request": request,
             "app_name": settings.app_name,
             "version": settings.version,
             "environment": settings.environment,

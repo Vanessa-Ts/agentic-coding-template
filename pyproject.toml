@@ -25,6 +25,8 @@ dev = [
     "isort~=8.0.0",
     "ruff~=0.15.0",
     "mypy~=2.1.0",
+    "pyyaml>=6.0.3",
+    "python-frontmatter>=1.3.0",
 ]
 test = [
     "pytest~=8.3.0",
@@ -39,16 +41,19 @@ test = [
 where = ["src"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["tests", "evals"]
 pythonpath = ["src"]
 asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
 addopts = [
     "-v",
+    "-m", "not behavioral",
     "--cov=app",
     "--cov-report=term-missing",
     "--cov-report=xml:coverage.xml",
     "--junitxml=report.xml"
 ]
+markers = ["behavioral: LLM-graded eval; run locally with -m behavioral"]
 
 [tool.coverage.run]
 source = ["app"]
@@ -71,6 +76,7 @@ ignore = ["E402"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S101"]
+"evals/**" = ["S101", "S603", "S607"]
 ".claude/hooks/**" = ["S101", "S603", "S607"]
 
 

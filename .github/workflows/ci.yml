@@ -75,3 +75,30 @@ jobs:
         with:
           name: test-report
           path: reports/report.xml
+
+  evals:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6.0.3
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.2.0
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --frozen --group dev
+
+      - name: Add venv to PATH
+        run: echo "$GITHUB_WORKSPACE/.venv/bin" >> $GITHUB_PATH
+
+      - name: Phase 1 — agent/skill/command structural lint
+        run: pytest evals/test_structural.py -v --tb=short --no-cov
+
+      - name: Phase 3 — skill activation matrix
+        run: pytest evals/test_skill_matrix.py -v --tb=short --no-cov
+
+      # Phase 2 behavioral tests are LOCAL-ONLY — not in CI.
+      # Run manually: pytest evals/test_behavioral.py -v -m behavioral

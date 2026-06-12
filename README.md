@@ -1,6 +1,6 @@
 # agentic-coding-template
 
-A FastAPI service demonstrating senior-grade Claude Code patterns: typed agents, auto-trigger skills, inline push gate, and a full Research→Plan→Execute→Review→Ship loop.
+A FastAPI service demonstrating senior-grade Claude Code patterns: typed agents, auto-trigger skills, inline push gate, and a full Spec→Plan→Implement→Review→Ship loop.
 
 ---
 
@@ -11,6 +11,22 @@ docker compose up --build          # start dev container
 cp .env.template .env              # configure environment
 uv run uvicorn app.main:app --reload --app-dir src
 ```
+
+### Agentic loop
+
+```
+spec → plan → implement → review → ship
+```
+
+| Step | How to trigger | Output |
+|---|---|---|
+| **Spec** | Describe the feature in plain English — `spec-feature` skill auto-triggers | `docs/specs/<feature>.md` |
+| **Plan** | `/plan <feature>` | `docs/plans/<feature>.md` |
+| **Implement** | `/implement` | `feat/<name>` branch with code + tests |
+| **Review** | `/review` | Violations or LGTM from parallel reviewer agents |
+| **Ship** | `/ship` | Quality gate + PR |
+
+Skip the spec step for well-understood changes (bug fixes, small additive work). Use it when requirements are fuzzy or need alignment before any code is written — the skill runs a structured 6-question interview and records what was agreed.
 
 ---
 
@@ -34,7 +50,8 @@ uv run uvicorn app.main:app --reload --app-dir src
 |---|---|---|---|
 | `planner` | Sonnet 4.6 | `docs/plans/` | Reads codebase, writes implementation plan |
 | `implementer` | Sonnet 4.6 | `src/`, `tests/` | Turns plan into working code + tests |
-| `quality-reviewer` | Haiku 4.5 | none (read-only) | ruff/mypy/style/CLAUDE.md violations |
+| `architecture-reviewer` | Haiku 4.5 | none (read-only) |  |
+| `performance-reviewer` | Haiku 4.5 | none (read-only) |  |
 | `security-reviewer` | Haiku 4.5 | none (read-only) | Secrets, OWASP-lite, input validation |
 
 ---
@@ -69,7 +86,7 @@ See [.claude/hooks/README.md](.claude/hooks/README.md) for exit codes and how to
 |---|---|
 | `/plan <feature>` | Invokes `planner` → writes `docs/plans/<feature>.md` |
 | `/implement` | Reads latest plan, creates `feat/<name>` branch, builds code |
-| `/review` | Invokes `quality-reviewer` + `security-reviewer` in parallel |
+| `/review` | Invokes `architecture-reviewer`, `architecture-reviewer` and `security-reviewer` in parallel |
 | `/ship` | Runs quality gate, then `gh pr create` |
 
 ---

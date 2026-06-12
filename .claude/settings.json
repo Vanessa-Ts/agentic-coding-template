@@ -42,6 +42,10 @@
           {
             "type": "command",
             "command": "python3 .claude/hooks/autoformat_python.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 .claude/hooks/lint_claude_md.py"
           }
         ]
       }
@@ -73,7 +77,9 @@
       "WebFetch(domain:docs.astral.sh)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:api.github.com)",
-      "WebFetch(domain:raw.githubusercontent.com)"
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:api-inference.huggingface.co)",
+      "WebFetch(domain:huggingface.co)"
     ],
     "deny": [
       "Read(./.env)",

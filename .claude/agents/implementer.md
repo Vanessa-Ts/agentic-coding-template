@@ -1,5 +1,6 @@
 ---
 name: implementer
+description: Turns a plan from docs/plans/ into working, tested code. Writes src/ and tests/ only.
 model: claude-sonnet-4-6
 tools:
   - Read

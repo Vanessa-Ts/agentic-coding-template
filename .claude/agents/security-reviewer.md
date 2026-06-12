@@ -1,5 +1,6 @@
 ---
 name: security-reviewer
+description: Read-only agent that checks for secrets, input validation issues, and OWASP vulnerabilities. Invoke via /review.
 model: claude-haiku-4-5-20251001
 tools:
   - Read
