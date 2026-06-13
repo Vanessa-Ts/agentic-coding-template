@@ -76,7 +76,7 @@ ignore = ["E402"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S101"]
-"evals/**" = ["S101", "S603", "S607"]
+"evals/**" = ["S101", "S603", "S607", "E501"]
 ".claude/hooks/**" = ["S101", "S603", "S607"]
 
 
