@@ -108,7 +108,7 @@ Spec written to docs/specs/<feature>/ — run /plan <feature> to produce the imp
 
 ### `design.md`
 
-```markdown
+````markdown
 # Design: <feature name>
 
 ## API contracts
@@ -147,7 +147,7 @@ sequenceDiagram
 ## Technical constraints
 - Stack: FastAPI, Pydantic v2, uv, Python 3.11+, mypy --strict
 - <additional constraints from user>
-```
+````
 
 ### `tasks.md`
 
