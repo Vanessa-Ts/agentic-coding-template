@@ -1,7 +1,7 @@
 # Base
 FROM python:3.11-slim AS base
 
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+COPY --from=ghcr.io/astral-sh/uv:0.11.21 /uv /usr/local/bin/uv
 
 ENV TZ=Europe/Berlin
 ARG DEBIAN_FRONTEND=noninteractive
