@@ -1,7 +1,6 @@
 ---
 name: planner
 description: Read-only agent that produces implementation plans in docs/plans/. Does not edit source or test files.
-model: claude-sonnet-4-6
 tools:
   - Read
   - Glob

@@ -1,7 +1,6 @@
 ---
 name: ai-service-generator
 description: Specialist implementer for LLM/AI integration features using the Anthropic SDK. Use instead of the general implementer when the plan involves Claude API calls, streaming, or tool use. Writes src/ and tests/ only.
-model: claude-sonnet-4-6
 tools:
   - Read
   - Edit
