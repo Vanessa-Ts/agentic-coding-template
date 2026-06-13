@@ -104,7 +104,7 @@ The `pre_push_quality_gate` hook enforces this inline on every `git push`.
 | `pytest-patterns` skill | Auto-loads for `tests/`, `conftest.py` |
 | `uv-workflows` skill | Auto-loads for `pyproject.toml`, `uv.lock` |
 | `infrastructure` skill | Auto-loads for `Dockerfile`, `docker-compose*`, CI workflows, Helm |
-| `spec-feature` skill | Structured interview → `docs/specs/<feature>.md` before planning |
+| `spec-feature` skill | 2-phase interview → `docs/specs/<feature>/{requirements,design,tasks}.md` before planning |
 | `openapi` skill | Auto-loads for `openapi*.yml/json`; spec authoring and codegen |
 | `review` skill | Inline BCE + FastAPI + Python checklist for ad-hoc code review |
 | `doc` skill | Reads source → writes project docs into `docs/` |
