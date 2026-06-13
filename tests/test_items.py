@@ -1,5 +1,13 @@
 import pytest
+import pytest_asyncio
 from httpx import AsyncClient
+
+
+@pytest_asyncio.fixture(autouse=True)
+async def store_reset() -> None:
+    from app.store.item_store import _item_store
+
+    _item_store._store.clear()
 
 
 # POST /items
@@ -52,6 +60,46 @@ async def test_list_items_empty(client: AsyncClient) -> None:
 async def test_list_items_no_404(client: AsyncClient) -> None:
     r = await client.get("/items")
     assert r.status_code != 404
+
+
+@pytest.mark.parametrize(
+    "limit,offset,expected_count,expected_status",
+    [
+        (20, 0, 3, 200),  # default pagination, fewer items than limit
+        (2, 0, 2, 200),  # custom limit clips result
+        (2, 2, 1, 200),  # offset skips into list
+        (20, 99, 0, 200),  # offset beyond length → empty list
+    ],
+)
+async def test_list_items_pagination(
+    client: AsyncClient,
+    limit: int,
+    offset: int,
+    expected_count: int,
+    expected_status: int,
+) -> None:
+    for i in range(3):
+        await client.post("/items", json={"name": f"item-{i}"})
+    r = await client.get("/items", params={"limit": limit, "offset": offset})
+    assert r.status_code == expected_status
+    assert len(r.json()) == expected_count
+
+
+@pytest.mark.parametrize(
+    "params,expected_status",
+    [
+        ({"limit": 0}, 422),  # below ge=1
+        ({"limit": 101}, 422),  # above le=100
+        ({"offset": -1}, 422),  # below ge=0
+    ],
+)
+async def test_list_items_pagination_validation(
+    client: AsyncClient,
+    params: dict[str, int],
+    expected_status: int,
+) -> None:
+    r = await client.get("/items", params=params)
+    assert r.status_code == expected_status
 
 
 # GET /items/{item_id}
