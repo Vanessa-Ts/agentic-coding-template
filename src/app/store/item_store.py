@@ -25,9 +25,9 @@ class ItemStore:
         async with self._lock:
             return self._store[item_id]
 
-    async def list(self) -> list[Item]:
+    async def list_items(self, limit: int = 20, offset: int = 0) -> list[Item]:
         async with self._lock:
-            return list(self._store.values())
+            return list(self._store.values())[offset : offset + limit]
 
     async def update(self, item_id: str, data: ItemUpdate) -> Item:
         async with self._lock:
