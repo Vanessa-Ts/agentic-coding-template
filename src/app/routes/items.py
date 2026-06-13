@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from app.models.item import Item, ItemCreate, ItemUpdate
 from app.store.item_store import ItemStore, get_item_store
@@ -17,9 +17,11 @@ async def create_item(
 
 @router.get("", response_model=list[Item], status_code=status.HTTP_200_OK)
 async def list_items(
+    limit: int = Query(default=20, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
     store: ItemStore = Depends(get_item_store),
 ) -> list[Item]:
-    return await store.list()
+    return await store.list_items(limit=limit, offset=offset)
 
 
 @router.get("/{item_id}", response_model=Item, status_code=status.HTTP_200_OK)

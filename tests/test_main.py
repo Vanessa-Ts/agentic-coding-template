@@ -1,27 +1,16 @@
-from httpx import ASGITransport, AsyncClient
-
-from app.main import app
+from httpx import AsyncClient
 
 
-async def test_index_returns_200() -> None:
-    async with AsyncClient(
-        transport=ASGITransport(app=app), base_url="http://test"
-    ) as c:
-        r = await c.get("/")
+async def test_index_returns_200(client: AsyncClient) -> None:
+    r = await client.get("/")
     assert r.status_code == 200
 
 
-async def test_index_contains_app_name() -> None:
-    async with AsyncClient(
-        transport=ASGITransport(app=app), base_url="http://test"
-    ) as c:
-        r = await c.get("/")
+async def test_index_contains_app_name(client: AsyncClient) -> None:
+    r = await client.get("/")
     assert "agentic-coding-template" in r.text
 
 
-async def test_index_not_found() -> None:
-    async with AsyncClient(
-        transport=ASGITransport(app=app), base_url="http://test"
-    ) as c:
-        r = await c.get("/nonexistent-route")
+async def test_index_not_found(client: AsyncClient) -> None:
+    r = await client.get("/nonexistent-route")
     assert r.status_code == 404

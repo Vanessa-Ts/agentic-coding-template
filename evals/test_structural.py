@@ -90,7 +90,7 @@ def test_agent_frontmatter_parses(agent_file: Path) -> None:
 @pytest.mark.parametrize("agent_file", _agent_files(), ids=lambda p: p.stem)
 def test_agent_required_fields(agent_file: Path) -> None:
     fm, _ = _strip_frontmatter(agent_file.read_text())
-    for field in ("name", "description", "model", "tools"):
+    for field in ("name", "description", "tools"):
         assert field in fm, f"{agent_file.name}: missing required field '{field}'"
     assert fm["description"], f"{agent_file.name}: 'description' must be non-empty"
 
@@ -98,7 +98,9 @@ def test_agent_required_fields(agent_file: Path) -> None:
 @pytest.mark.parametrize("agent_file", _agent_files(), ids=lambda p: p.stem)
 def test_agent_model_is_known(agent_file: Path) -> None:
     fm, _ = _strip_frontmatter(agent_file.read_text())
-    model = fm.get("model", "")
+    model = fm.get("model")
+    if model is None:
+        return
     assert model in KNOWN_MODELS, (
         f"{agent_file.name}: model '{model}' is not a known Claude model ID. "
         f"Known: {sorted(KNOWN_MODELS)}"

@@ -82,6 +82,10 @@
       "WebFetch(domain:huggingface.co)"
     ],
     "deny": [
+      "Bash(git push * main)",
+      "Bash(git push *:refs/heads/main)",
+      "Bash(git checkout main)",
+      "Bash(git switch main)",
       "Read(./.env)",
       "Read(./.env.*)",
       "Read(**/.env)",
