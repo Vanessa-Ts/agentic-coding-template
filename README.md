@@ -1,6 +1,6 @@
 # agentic-coding-template
 
-A FastAPI service demonstrating senior-grade Claude Code patterns: typed agents, auto-trigger skills, inline push gate, and a full Spec→Plan→Implement→Review→Ship loop.
+Containered FastAPI service with Claude Code patterns: typed agents, auto-trigger skills, inline push gate, and a Spec→Plan→Implement→Review→Ship loop.
 
 ---
 
@@ -9,7 +9,6 @@ A FastAPI service demonstrating senior-grade Claude Code patterns: typed agents,
 ```bash
 docker compose up --build          # start dev container
 cp .env.template .env              # configure environment
-uv run uvicorn app.main:app --reload --app-dir src
 ```
 
 ### Agentic loop
@@ -50,8 +49,8 @@ Skip the spec step for well-understood changes (bug fixes, small additive work).
 |---|---|---|---|
 | `planner` | Sonnet 4.6 | `docs/plans/` | Reads codebase, writes implementation plan |
 | `implementer` | Sonnet 4.6 | `src/`, `tests/` | Turns plan into working code + tests |
-| `architecture-reviewer` | Haiku 4.5 | none (read-only) |  |
-| `performance-reviewer` | Haiku 4.5 | none (read-only) |  |
+| `architecture-reviewer` | Haiku 4.5 | none (read-only) |
+| `performance-reviewer` | Haiku 4.5 | none (read-only) |
 | `security-reviewer` | Haiku 4.5 | none (read-only) | Secrets, OWASP-lite, input validation |
 
 ---

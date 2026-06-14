@@ -2,7 +2,7 @@
 
 ## Project
 
-`agentic-coding-template` — FastAPI service demonstrating senior-grade Claude Code patterns.
+`agentic-coding-template` — FastAPI service with Claude Code patterns.
 Stack: FastAPI 0.136, Pydantic v2, uv, pytest-asyncio, ruff, mypy --strict, Python 3.11+.
 
 ---
