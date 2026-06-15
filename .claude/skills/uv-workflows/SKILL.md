@@ -22,11 +22,14 @@ uv sync               # install all deps from uv.lock
 
 ## Running commands
 
+Run tools directly — never prefix with `uv run`:
+
 ```bash
-uv run pytest         # run tests
-uv run mypy src/      # type check
-uv run ruff check .   # lint
-uv run python script.py
+pytest                # run tests
+mypy --strict src/    # type check
+ruff check .          # lint
+ruff format --check . # format check
+python script.py      # run a script
 ```
 
 ## Upgrading a specific package

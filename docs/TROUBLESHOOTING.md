@@ -104,14 +104,14 @@ The full output of the failing check is printed below the block message.
 **Quick commands:**
 
 ```bash
-uv run ruff format .                  # auto-format
-uv run ruff check --fix .             # auto-fix lint
-uv run mypy --strict src/             # type errors (manual fix)
-uv run pytest -x                      # first failing test
+ruff format .                  # auto-format
+ruff check --fix .             # auto-fix lint
+mypy --strict src/             # type errors (manual fix)
+pytest -x                      # first failing test
 ```
 
 Run all four manually before pushing to catch failures early:
 
 ```bash
-uv run ruff format --check . && uv run ruff check . && uv run mypy --strict src/ && uv run pytest -x
+ruff format --check . && ruff check . && mypy --strict src/ && pytest -x
 ```

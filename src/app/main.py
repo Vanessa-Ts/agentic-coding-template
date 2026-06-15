@@ -8,7 +8,6 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from app.core.config import settings
-from app.routes.items import router as items_router
 
 logger = logging.getLogger(__name__)
 
@@ -36,8 +35,6 @@ app = FastAPI(
 
 app.mount("/static", StaticFiles(directory="src/app/ui"), name="static")
 templates = Jinja2Templates(directory="src/app/ui")
-
-app.include_router(items_router, prefix="/items", tags=["items"])
 
 
 # --Health--
