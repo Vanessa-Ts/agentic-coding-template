@@ -16,7 +16,7 @@ eggs/
  
 # Type checkers
 .ruff_cache/
- .mypy_cache/
+.mypy_cache/
 .dmypy.json
 dmypy.json
  
@@ -115,6 +115,7 @@ venv.bak/
 .claude/settings.local.json
 .claude/state/
 docs/plans/
+docs/specs/
 
 # Project-specific
 TODO.md

@@ -45,6 +45,13 @@ async def client() -> AsyncGenerator[AsyncClient, None]:
 
 ---
 
+## Git commit style
+
+- Use `git commit -m "<message>"` with a plain, descriptive one-line message. No HEREDOC.
+- **Never** append attribution lines to commit messages.
+
+---
+
 ## Forbidden patterns
 
 | Pattern | Replacement |
