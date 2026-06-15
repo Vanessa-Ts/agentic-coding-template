@@ -1,20 +1,20 @@
 # Paste-Ready Plan-Mode Prompts
 
-Ten prompts you can paste directly into a `/plan` invocation. Each targets a common scenario in this codebase.
+Ten prompts you can paste directly into a `/plan` invocation. Each targets a common scenario for AI engineers building on this template.
 
 ---
 
-## 1. New resource
+## 1. Claude streaming chat endpoint
 
 ```
-/plan orders-resource
+/plan streaming-chat-endpoint
 ```
 
-Scope: in-memory CRUD for an `Order` resource (5 endpoints, Pydantic v2 models, asyncio.Lock store, 15 tests). Follow the same pattern as `src/app/routes/items.py`.
+Scope: add `POST /chat` that accepts `{"messages": [...], "model": "claude-sonnet-4-6"}` and streams the response as Server-Sent Events using the Anthropic SDK (`stream=True`). Use the `ai-service-generator` agent. Return `data: <token>\n\n` chunks; send `data: [DONE]\n\n` on completion. Tests verify: happy path SSE stream, 422 on missing messages field, 400 on unsupported model string.
 
 ---
 
-## 2. Middleware — auth, CORS, rate-limit
+## 2. API-key auth middleware
 
 ```
 /plan auth-middleware
@@ -24,23 +24,23 @@ Scope: add API-key header auth via FastAPI middleware. Requests missing `X-API-K
 
 ---
 
-## 3. Dependency upgrade
+## 3. Structured output extraction
 
 ```
-/plan dependency-upgrade
+/plan structured-output-extraction
 ```
 
-Scope: audit `pyproject.toml` for outdated packages (`uv lock --upgrade --dry-run`), upgrade FastAPI and httpx, confirm `uv run pytest -x` passes, confirm `mypy --strict src/` passes. Document any breaking API changes.
+Scope: add `POST /extract` that accepts `{"text": str, "schema": dict}` and uses `claude-sonnet-4-6` with tool use to extract structured data matching the caller-supplied JSON Schema. Return a validated Pydantic model. Use the `ai-service-generator` agent. Tests verify: correct extraction on a fixture text, 422 on missing fields, graceful 400 when the model cannot satisfy the schema.
 
 ---
 
-## 4. Debug a 500 error
+## 4. Debug a streaming truncation issue
 
 ```
-/plan debug-500
+/plan debug-stream-truncation
 ```
 
-Scope: reproduce a 500 from `POST /items` with an empty name field. Trace through `ItemCreate` validation, the store, and the exception handler. Identify whether the issue is a missing `@app.exception_handler`, a Pydantic field constraint, or an unhandled `KeyError`. Propose a fix with a regression test.
+Scope: reproduce a bug where `POST /chat` stops emitting SSE tokens mid-response on long outputs. Trace through the Anthropic SDK stream iterator, the FastAPI `StreamingResponse`, and the ASGI send loop. Identify whether the cause is a missing `content_block_delta` handler, a response buffer flush issue, or a client timeout. Propose a fix with a regression test using a mocked stream.
 
 ---
 
@@ -50,7 +50,7 @@ Scope: reproduce a 500 from `POST /items` with an empty name field. Trace throug
 /plan error-handling-layer
 ```
 
-Scope: add a global `@app.exception_handler(Exception)` that logs the traceback and returns `{"detail": "internal server error"}` with status 500. Add a specific handler for `KeyError → 404`. Ensure no bare `except` clauses remain in `src/`. Tests verify both handlers fire correctly.
+Scope: add a global `@app.exception_handler(Exception)` that logs the traceback and returns `{"detail": "internal server error"}` with status 500. Add specific handlers for `anthropic.RateLimitError → 429`, `anthropic.APIStatusError → 502`, and `KeyError → 404`. Ensure no bare `except` clauses remain in `src/`. Tests verify all handlers fire correctly.
 
 ---
 
@@ -64,33 +64,33 @@ Scope: read-only pass over all files in `src/` and `tests/`. Flag every CLAUDE.m
 
 ---
 
-## 7. Performance investigation
+## 7. LLM cost and latency profiling
 
 ```
-/plan performance-investigation
+/plan llm-cost-latency-profiling
 ```
 
-Scope: profile `GET /items` under 1 000 concurrent synthetic requests using `httpx` + `asyncio.gather`. Identify bottlenecks in the in-memory store (lock contention, list copy). Propose a lock-free read path. Do not implement — output a findings report and proposed change set only.
+Scope: instrument every Anthropic SDK call in `src/` to record input tokens, output tokens, latency (ms), and model name. Expose `GET /metrics` returning aggregated totals per model. Use an in-memory store with `asyncio.Lock`. Do not implement a database. Tests verify: metrics increment on a mocked SDK call, the endpoint returns correct totals, concurrent calls do not race.
 
 ---
 
-## 8. Test gap analysis
+## 8. Conversation thread resource
 
 ```
-/plan test-gap-analysis
+/plan conversation-threads
 ```
 
-Scope: compare route handlers in `src/app/routes/` against tests in `tests/`. For each route, verify the 3-test minimum (happy path · 422 · 404). List any gaps with the missing scenario. Propose new test cases in the plan's Test Plan section.
+Scope: add a `threads` resource — `POST /threads` creates a thread and returns `thread_id`; `POST /threads/{thread_id}/messages` appends a user turn and calls `claude-sonnet-4-6` with the full history, returning the assistant reply. Store threads in memory (`asyncio.Lock`). Use the `ai-service-generator` agent. Tests: create thread, append two turns, verify history grows, 404 on unknown thread.
 
 ---
 
-## 9. Refactor a module
+## 9. Prompt template module
 
 ```
-/plan refactor-item-store
+/plan prompt-template-module
 ```
 
-Scope: extract a generic `BaseStore[T]` from `src/app/store/item_store.py`. The base class handles `asyncio.Lock`, CRUD scaffolding, and `KeyError` semantics. `ItemStore` becomes a thin subclass. All 15 existing tests must still pass; no new public API surface.
+Scope: add `src/app/prompts/` with a `PromptTemplate` class that loads `.txt` templates from `src/app/prompts/templates/`, performs `{variable}` substitution via `str.format_map`, and raises a typed `MissingVariableError` on unresolved keys. Expose `POST /prompts/render` accepting `{"template": str, "variables": dict}`. Tests: happy path render, missing variable → 400, unknown template name → 404.
 
 ---
 
@@ -100,4 +100,4 @@ Scope: extract a generic `BaseStore[T]` from `src/app/store/item_store.py`. The 
 /plan pre-merge-check
 ```
 
-Scope: run the full quality gate (`ruff format --check`, `ruff check`, `mypy --strict src/`, `pytest -x`), then invoke `/review` (quality + security in parallel). If violations exist, propose the minimal diff to fix them. Output a go/no-go recommendation with evidence.
+Scope: run the full quality gate (`ruff format --check`, `ruff check`, `mypy --strict src/`, `pytest -x`), then invoke `/review` (architecture + performance + security in parallel). If violations exist, propose the minimal diff to fix them. Output a go/no-go recommendation with evidence.

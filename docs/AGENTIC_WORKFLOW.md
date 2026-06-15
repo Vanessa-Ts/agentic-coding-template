@@ -89,7 +89,7 @@ Never use `exit(1)` — it is reserved for unexpected Python exceptions and will
 {
   "tool_name": "Bash",
   "tool_input": {
-    "command": "git push origin feat/items-resource"
+    "command": "git push origin feat/my-feature"
   }
 }
 ```
@@ -132,7 +132,7 @@ Events: `PreToolUse`, `PostToolUse`. Matchers: `Bash`, `Edit`, `Write`, `MultiEd
 
 ## Self-Correcting Review Loop
 
-`/review` invokes both reviewer agents in parallel. If either finds violations:
+`/review` invokes all three reviewer agents in parallel. If any finds violations:
 
 ```
 Iteration 1:
