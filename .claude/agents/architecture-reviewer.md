@@ -40,12 +40,15 @@ Never upward. Never cross-resource (router A importing from router B's store/mod
 ## Review checklist
 
 1. **Boundary purity** — `routes/` files must not contain business logic. Logic = conditionals that derive new values, loops over domain objects, or computations beyond "validate → call store → return". Flag route handlers longer than ~20 lines as a smell.
+   Run: `rg "^\s+(if|for|while|return [^a])" src/app/routes/`
 2. **Upward imports** — `store/` and `models/` must not import from `routes/`. Run: `rg "from app.routes" src/app/store/ src/app/models/`
 3. **Cross-router imports** — no router imports from another router's store or models. Run: `rg "from app.routes" src/app/routes/`
 4. **Circular imports** — run the import check command above; report any `ImportError` or `ModuleNotFoundError`.
 5. **Router registration** — every new router module must be mounted in `main.py` via `app.include_router()`. Check `git diff main...HEAD -- src/app/main.py`.
 6. **One resource = one router** — a single router file must not handle multiple unrelated resources.
+   Run: `rg "^router = APIRouter" src/app/routes/ -l` and verify each file covers one resource.
 7. **`main.py` scope** — `main.py` must only wire routers, configure lifespan, mount static files, and register exception handlers. No business logic.
+   Run: `rg "^\s+(if|for|while)" src/app/main.py`
 
 ## Output format
 

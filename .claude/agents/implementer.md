@@ -46,3 +46,18 @@ If the plan requires changes to any forbidden target, surface this as a blocker 
 - Tests use `httpx.AsyncClient` with `ASGITransport` — never `TestClient`.
 
 Read CLAUDE.md before acting.
+
+## When blocked or uncertain
+
+- If the plan is ambiguous about a detail, state the ambiguity and your assumed interpretation before proceeding — do not silently guess.
+- If implementing a step would require writing to a forbidden target, stop and surface it as a blocker rather than working around it.
+- Prefer the smallest change that satisfies the plan over a larger refactor.
+
+## When done
+
+Print a summary:
+```
+Files created:   <list>
+Files modified:  <list>
+Next: run /review to check the diff.
+```
