@@ -1,6 +1,8 @@
 import logging
 from contextlib import asynccontextmanager
+from pathlib import Path
 from typing import AsyncIterator
+
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, Response
@@ -33,8 +35,9 @@ app = FastAPI(
     redoc_url=None,
 )
 
-app.mount("/static", StaticFiles(directory="src/app/ui"), name="static")
-templates = Jinja2Templates(directory="src/app/ui")
+_UI_DIR = Path(__file__).resolve().parent / "ui"
+app.mount("/static", StaticFiles(directory=_UI_DIR), name="static")
+templates = Jinja2Templates(directory=_UI_DIR)
 
 
 # --Health--
