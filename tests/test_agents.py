@@ -39,13 +39,13 @@ async def test_list_agents_skills_non_empty(client: AsyncClient) -> None:
     assert len(body["skills"]) > 0
 
 
-async def test_list_agents_first_entry_has_required_fields(client: AsyncClient) -> None:
+@pytest.mark.parametrize("field", ["type", "name", "role", "icon", "connects_to"])
+async def test_list_agents_first_entry_has_required_fields(
+    client: AsyncClient, field: str
+) -> None:
     """First entry in 'agents' has all required fields."""
-    response = await client.get("/api/agents")
-    assert response.status_code == 200
-    first = response.json()["agents"][0]
-    for field in ("type", "name", "role", "icon", "connects_to"):
-        assert field in first, f"Missing field: {field}"
+    first = (await client.get("/api/agents")).json()["agents"][0]
+    assert field in first
 
 
 async def test_list_agents_missing_file(
