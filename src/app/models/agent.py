@@ -8,7 +8,7 @@ class AgentOrSkill(BaseModel):
     name: str
     role: str
     icon: str
-    connects_to: list[str]
+    connects_to: list[str] = []
 
 
 class AgentCatalogue(BaseModel):

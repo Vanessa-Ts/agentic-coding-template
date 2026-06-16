@@ -67,3 +67,14 @@ async def test_list_agents_malformed_json(
     monkeypatch.setattr(agent_catalogue_module, "_AGENTS_JSON", bad_file)
     response = await client.get("/api/agents")
     assert response.status_code == 500
+
+
+async def test_list_agents_schema_validation_error(
+    client: AsyncClient, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """Returns 500 when agents.json is valid JSON but fails schema validation."""
+    bad_file = tmp_path / "agents.json"
+    bad_file.write_text('{"agents": "not-a-list", "skills": []}', encoding="utf-8")
+    monkeypatch.setattr(agent_catalogue_module, "_AGENTS_JSON", bad_file)
+    response = await client.get("/api/agents")
+    assert response.status_code == 500

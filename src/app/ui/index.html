@@ -28,13 +28,20 @@
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <script>
     (function () {
-      function renderChips(connects_to) {
+      function renderChips(connects_to, container) {
         if (!connects_to || connects_to.length === 0) {
-          return '<span class="chip">—</span>';
+          var dash = document.createElement('span');
+          dash.className = 'chip';
+          dash.textContent = '—';
+          container.appendChild(dash);
+          return;
         }
-        return connects_to.map(function (c) {
-          return '<span class="chip">' + c + '</span>';
-        }).join('');
+        connects_to.forEach(function (c) {
+          var chip = document.createElement('span');
+          chip.className = 'chip';
+          chip.textContent = c;
+          container.appendChild(chip);
+        });
       }
 
       function renderCard(item) {
@@ -43,28 +50,50 @@
         article.setAttribute('data-expanded', 'false');
         article.setAttribute('role', 'button');
         article.setAttribute('aria-expanded', 'false');
-        article.innerHTML =
-          '<div class="card-header">' +
-            '<i data-lucide="' + item.icon + '" class="card-icon"></i>' +
-            '<span class="card-name">' + item.name + '</span>' +
-            '<span class="badge type-' + item.type + '">' + item.type + '</span>' +
-          '</div>' +
-          '<p class="card-role">' + item.role + '</p>' +
-          '<div class="card-detail" hidden>' +
-            '<div class="connects-chips">' +
-              renderChips(item.connects_to) +
-            '</div>' +
-          '</div>';
+
+        var header = document.createElement('div');
+        header.className = 'card-header';
+
+        var iconEl = document.createElement('i');
+        iconEl.setAttribute('data-lucide', item.icon);
+        iconEl.className = 'card-icon';
+        header.appendChild(iconEl);
+
+        var nameSpan = document.createElement('span');
+        nameSpan.className = 'card-name';
+        nameSpan.textContent = item.name;
+        header.appendChild(nameSpan);
+
+        var badge = document.createElement('span');
+        badge.className = 'badge type-' + item.type;
+        badge.textContent = item.type;
+        header.appendChild(badge);
+
+        article.appendChild(header);
+
+        var roleP = document.createElement('p');
+        roleP.className = 'card-role';
+        roleP.textContent = item.role;
+        article.appendChild(roleP);
+
+        var detail = document.createElement('div');
+        detail.className = 'card-detail';
+        detail.hidden = true;
+
+        var chipsDiv = document.createElement('div');
+        chipsDiv.className = 'connects-chips';
+        renderChips(item.connects_to, chipsDiv);
+        detail.appendChild(chipsDiv);
+
+        article.appendChild(detail);
 
         article.addEventListener('click', function () {
           var expanded = article.getAttribute('data-expanded') === 'true';
-          var detail = article.querySelector('.card-detail');
           if (expanded) {
             detail.hidden = true;
             article.setAttribute('data-expanded', 'false');
             article.setAttribute('aria-expanded', 'false');
           } else {
-            // Collapse any currently open card
             document.querySelectorAll('.agent-card[data-expanded="true"]').forEach(function (open) {
               open.querySelector('.card-detail').hidden = true;
               open.setAttribute('data-expanded', 'false');
