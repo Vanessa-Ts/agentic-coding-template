@@ -10,6 +10,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from app.core.config import settings
+from app.routes.agents import router as agents_router
 
 logger = logging.getLogger(__name__)
 
@@ -38,6 +39,8 @@ app = FastAPI(
 _UI_DIR = Path(__file__).resolve().parent / "ui"
 app.mount("/static", StaticFiles(directory=_UI_DIR), name="static")
 templates = Jinja2Templates(directory=_UI_DIR)
+
+app.include_router(agents_router, prefix="/api")
 
 
 # --Health--
