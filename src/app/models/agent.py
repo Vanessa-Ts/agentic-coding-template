@@ -9,6 +9,7 @@ class AgentOrSkill(BaseModel):
     type: Literal["agent", "skill"]
     name: str
     role: str
+    description: str = ""
     icon: str
     connects_to: list[str] = []
 

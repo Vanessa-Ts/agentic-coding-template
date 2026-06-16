@@ -10,9 +10,14 @@
   <header class="hero">
     <div class="hero-inner">
       <h1>{{ app_name }}</h1>
-      <p class="hero-desc">A collection of specialised agents and auto-loading skills that
-        bring Claude Code patterns to every layer of your FastAPI service — from planning
-        and implementation to review, testing, and deployment.</p>
+      <p class="hero-desc">agentic-coding-template wires a set of Claude Code agents and
+        auto-loading skills into a FastAPI project. Agents are discrete, explicitly invoked
+        workers — the planner writes specs, the implementer writes code, and the reviewer
+        suite audits the result. Skills attach context automatically when you open relevant
+        files, injecting project conventions into the active session without manual
+        prompting. The stack enforces async-first FastAPI patterns, Pydantic v2,
+        BCE layer architecture, and uv-based dependency management. Quality is gated by
+        ruff, mypy&nbsp;--strict, and pytest-asyncio on every push.</p>
     </div>
   </header>
   <main class="catalogue">
@@ -30,10 +35,10 @@
     (function () {
       function renderChips(connects_to, container) {
         if (!connects_to || connects_to.length === 0) {
-          var dash = document.createElement('span');
-          dash.className = 'chip';
-          dash.textContent = '—';
-          container.appendChild(dash);
+          var label = document.createElement('span');
+          label.className = 'chip chip-on-demand';
+          label.textContent = 'on demand';
+          container.appendChild(label);
           return;
         }
         connects_to.forEach(function (c) {
@@ -79,6 +84,18 @@
         var detail = document.createElement('div');
         detail.className = 'card-detail';
         detail.hidden = true;
+
+        if (item.description) {
+          var descP = document.createElement('p');
+          descP.className = 'card-desc-full';
+          descP.textContent = item.description;
+          detail.appendChild(descP);
+        }
+
+        var chipsLabel = document.createElement('p');
+        chipsLabel.className = 'card-chips-label';
+        chipsLabel.textContent = 'Connects to';
+        detail.appendChild(chipsLabel);
 
         var chipsDiv = document.createElement('div');
         chipsDiv.className = 'connects-chips';

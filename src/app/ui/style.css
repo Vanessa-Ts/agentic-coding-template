@@ -7,12 +7,7 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-}
-
-main {
-    width: 100%;
-    max-width: 480px;
-    padding: 1.5rem;
+    align-items: stretch;
 }
 
 .card {
@@ -102,7 +97,6 @@ h1 {
 .hero-desc {
     font-size: 1.1rem;
     color: #94a3b8;
-    max-width: 640px;
     line-height: 1.6;
 }
 
@@ -131,6 +125,7 @@ h1 {
     display: grid;
     gap: 1rem;
     grid-template-columns: repeat(3, 1fr);
+    align-items: start;
 }
 
 @media (max-width: 1023px) {
@@ -150,6 +145,7 @@ h1 {
     padding: 1.25rem;
     cursor: pointer;
     transition: border-color 0.15s;
+    min-height: 9rem;
 }
 
 .agent-card:hover { border-color: #4c6ef5; }
@@ -203,4 +199,26 @@ h1 {
     font-family: monospace;
     background: #2d3148;
     color: #94a3b8;
+}
+
+.chip-on-demand {
+    background: transparent;
+    border: 1px dashed #3d4268;
+    color: #64748b;
+    font-style: italic;
+}
+
+.card-desc-full {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+}
+
+.card-chips-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #475569;
+    margin-bottom: 0.4rem;
 }
