@@ -1,13 +1,12 @@
-# FastAPI Conventions
-
-
-**paths**:
+---
+paths:
   - "src/app/routes/**"
   - "src/app/models/**"
   - "src/app/main.py"
-**trigger**: "Use whenever editing src/app/routes/, src/app/models/, src/app/main.py, or implementing FastAPI endpoints, dependencies, response models, lifespan, middleware, or DI."
+trigger: "Use whenever editing src/app/routes/, src/app/models/, src/app/main.py, or implementing FastAPI endpoints, dependencies, response models, lifespan, middleware, or DI."
 ---
 
+# FastAPI Conventions
 
 ## Routes
 
