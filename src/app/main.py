@@ -49,7 +49,7 @@ async def catalogue_error_handler(
     request: Request, exc: CatalogueError
 ) -> JSONResponse:
     logger.exception("Catalogue error: %s", exc)
-    return JSONResponse(status_code=500, content={"detail": str(exc)})
+    return JSONResponse(status_code=500, content={"detail": "Configuration error"})
 
 
 # --Health--
