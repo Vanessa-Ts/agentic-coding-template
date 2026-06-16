@@ -1,0 +1,125 @@
+{
+  "agents": [
+    {
+      "type": "agent",
+      "name": "planner",
+      "role": "Read-only; writes docs/plans/<feature>.md",
+      "icon": "map",
+      "connects_to": []
+    },
+    {
+      "type": "agent",
+      "name": "implementer",
+      "role": "Writes src/ + tests/ only; reads plan first",
+      "icon": "code-2",
+      "connects_to": ["planner"]
+    },
+    {
+      "type": "agent",
+      "name": "ai-service-generator",
+      "role": "Specialist implementer for Anthropic SDK / LLM features",
+      "icon": "bot",
+      "connects_to": []
+    },
+    {
+      "type": "agent",
+      "name": "architecture-reviewer",
+      "role": "Read-only; BCE layer compliance and import dependency flow",
+      "icon": "layers",
+      "connects_to": []
+    },
+    {
+      "type": "agent",
+      "name": "performance-reviewer",
+      "role": "Read-only; N+1 queries, blocking I/O, async anti-patterns",
+      "icon": "zap",
+      "connects_to": []
+    },
+    {
+      "type": "agent",
+      "name": "security-reviewer",
+      "role": "Read-only; secrets/input validation/OWASP-lite",
+      "icon": "shield",
+      "connects_to": []
+    }
+  ],
+  "skills": [
+    {
+      "type": "skill",
+      "name": "fastapi-conventions",
+      "role": "Auto-loads for src/app/routes/, models/, main.py",
+      "icon": "route",
+      "connects_to": []
+    },
+    {
+      "type": "skill",
+      "name": "pytest-patterns",
+      "role": "Auto-loads for tests/, conftest.py",
+      "icon": "check-circle",
+      "connects_to": []
+    },
+    {
+      "type": "skill",
+      "name": "uv-workflows",
+      "role": "Auto-loads for pyproject.toml, uv.lock",
+      "icon": "package",
+      "connects_to": []
+    },
+    {
+      "type": "skill",
+      "name": "infrastructure",
+      "role": "Auto-loads for Dockerfile, docker-compose*, CI workflows, Helm",
+      "icon": "server",
+      "connects_to": []
+    },
+    {
+      "type": "skill",
+      "name": "spec-feature",
+      "role": "2-phase interview → docs/specs/<feature>/ before planning",
+      "icon": "clipboard-list",
+      "connects_to": ["planner"]
+    },
+    {
+      "type": "skill",
+      "name": "openapi",
+      "role": "Auto-loads for openapi*.yml/json; spec authoring and codegen",
+      "icon": "file-json",
+      "connects_to": []
+    },
+    {
+      "type": "skill",
+      "name": "review",
+      "role": "Inline BCE + FastAPI + Python checklist for ad-hoc code review",
+      "icon": "search",
+      "connects_to": ["architecture-reviewer", "performance-reviewer", "security-reviewer"]
+    },
+    {
+      "type": "skill",
+      "name": "doc",
+      "role": "Reads source → writes project docs into docs/",
+      "icon": "book-open",
+      "connects_to": []
+    },
+    {
+      "type": "skill",
+      "name": "blog-post",
+      "role": "Audience interview → structured technical blog post",
+      "icon": "newspaper",
+      "connects_to": []
+    },
+    {
+      "type": "skill",
+      "name": "frontend",
+      "role": "Auto-loads for *.html, ui/**; Jinja2, Tailwind, HTMX patterns",
+      "icon": "layout-dashboard",
+      "connects_to": []
+    },
+    {
+      "type": "skill",
+      "name": "infografik",
+      "role": "AI image generation via Hugging Face FLUX.1 → docs/assets/",
+      "icon": "image",
+      "connects_to": []
+    }
+  ]
+}
