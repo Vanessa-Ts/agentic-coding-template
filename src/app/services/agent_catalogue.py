@@ -4,13 +4,10 @@ from pathlib import Path
 
 from pydantic import ValidationError
 
+from app.exceptions import CatalogueError
 from app.models.agent import AgentCatalogue
 
 _AGENTS_JSON: Path = Path(__file__).resolve().parent.parent / "ui" / "agents.json"
-
-
-class CatalogueError(Exception):
-    pass
 
 
 async def get_catalogue() -> AgentCatalogue:

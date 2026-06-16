@@ -10,8 +10,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from app.core.config import settings
+from app.exceptions import CatalogueError
 from app.routes.agents import router as agents_router
-from app.services.agent_catalogue import CatalogueError
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +48,7 @@ app.include_router(agents_router, prefix="/api")
 async def catalogue_error_handler(
     request: Request, exc: CatalogueError
 ) -> JSONResponse:
+    logger.exception("Catalogue error: %s", exc)
     return JSONResponse(status_code=500, content={"detail": str(exc)})
 
 

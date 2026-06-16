@@ -65,7 +65,7 @@
         header.appendChild(nameSpan);
 
         var badge = document.createElement('span');
-        badge.className = 'badge type-' + item.type;
+        badge.classList.add('badge', 'type-' + item.type);
         badge.textContent = item.type;
         header.appendChild(badge);
 
