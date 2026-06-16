@@ -1,25 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ app_name }}</title>
-    <link rel="stylesheet" href="/static/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ app_name }}</title>
+  <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <main>
-        <div class="card">
-            <div class="header">
-                <h1>{{ app_name }}</h1>
-                <span class="badge">v{{ version }}</span>
-                <span class="badge env-{{ environment }}">{{ environment }}</span>
-            </div>
-            <p class="description">FastAPI service running in Docker</p>
-            <div class="links">
-                <a href="/docs" class="link-btn">API Docs</a>
-                <!--  <a href="/health/live" class="link-btn secondary">Health</a> -->
-            </div>
-        </div>
-    </main>
+  <header class="hero">
+    <div class="hero-inner">
+      <h1>{{ app_name }}</h1>
+      <p class="hero-desc">agentic-coding-template wires a set of Claude Code agents and
+        auto-loading skills into a FastAPI project. Agents are discrete, explicitly invoked
+        workers — the planner writes specs, the implementer writes code, and the reviewer
+        suite audits the result. Skills attach context automatically when you open relevant
+        files, injecting project conventions into the active session without manual
+        prompting. The stack enforces async-first FastAPI patterns, Pydantic v2,
+        BCE layer architecture, and uv-based dependency management. Quality is gated by
+        ruff, mypy&nbsp;--strict, and pytest-asyncio on every push.</p>
+    </div>
+  </header>
+  <main class="catalogue">
+    <section class="cat-section" id="agents-section">
+      <h2>Agents</h2>
+      <div class="card-grid" id="agents-grid"></div>
+    </section>
+    <section class="cat-section" id="skills-section">
+      <h2>Skills</h2>
+      <div class="card-grid" id="skills-grid"></div>
+    </section>
+  </main>
+  <script src="https://unpkg.com/lucide@0.525.0/dist/umd/lucide.min.js"></script>
+  <script>
+    (function () {
+      function renderChips(connects_to, container) {
+        if (!connects_to || connects_to.length === 0) {
+          var label = document.createElement('span');
+          label.className = 'chip chip-on-demand';
+          label.textContent = 'on demand';
+          container.appendChild(label);
+          return;
+        }
+        connects_to.forEach(function (c) {
+          var chip = document.createElement('span');
+          chip.className = 'chip';
+          chip.textContent = c;
+          container.appendChild(chip);
+        });
+      }
+
+      function renderCard(item) {
+        var article = document.createElement('article');
+        article.className = 'agent-card';
+        article.setAttribute('data-expanded', 'false');
+        article.setAttribute('role', 'button');
+        article.setAttribute('aria-expanded', 'false');
+
+        var header = document.createElement('div');
+        header.className = 'card-header';
+
+        var iconEl = document.createElement('i');
+        iconEl.setAttribute('data-lucide', item.icon);
+        iconEl.className = 'card-icon';
+        header.appendChild(iconEl);
+
+        var nameSpan = document.createElement('span');
+        nameSpan.className = 'card-name';
+        nameSpan.textContent = item.name;
+        header.appendChild(nameSpan);
+
+        var badge = document.createElement('span');
+        badge.classList.add('badge', 'type-' + item.type);
+        badge.textContent = item.type;
+        header.appendChild(badge);
+
+        article.appendChild(header);
+
+        var roleP = document.createElement('p');
+        roleP.className = 'card-role';
+        roleP.textContent = item.role;
+        article.appendChild(roleP);
+
+        var detail = document.createElement('div');
+        detail.className = 'card-detail';
+        detail.hidden = true;
+
+        if (item.description) {
+          var descP = document.createElement('p');
+          descP.className = 'card-desc-full';
+          descP.textContent = item.description;
+          detail.appendChild(descP);
+        }
+
+        var chipsLabel = document.createElement('p');
+        chipsLabel.className = 'card-chips-label';
+        chipsLabel.textContent = 'Connects to';
+        detail.appendChild(chipsLabel);
+
+        var chipsDiv = document.createElement('div');
+        chipsDiv.className = 'connects-chips';
+        renderChips(item.connects_to, chipsDiv);
+        detail.appendChild(chipsDiv);
+
+        article.appendChild(detail);
+
+        article.addEventListener('click', function () {
+          var expanded = article.getAttribute('data-expanded') === 'true';
+          if (expanded) {
+            detail.hidden = true;
+            article.setAttribute('data-expanded', 'false');
+            article.setAttribute('aria-expanded', 'false');
+          } else {
+            document.querySelectorAll('.agent-card[data-expanded="true"]').forEach(function (open) {
+              open.querySelector('.card-detail').hidden = true;
+              open.setAttribute('data-expanded', 'false');
+              open.setAttribute('aria-expanded', 'false');
+            });
+            detail.hidden = false;
+            article.setAttribute('data-expanded', 'true');
+            article.setAttribute('aria-expanded', 'true');
+          }
+        });
+
+        return article;
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        fetch('/api/agents')
+          .then(function (res) { return res.json(); })
+          .then(function (data) {
+            var agentsGrid = document.getElementById('agents-grid');
+            var skillsGrid = document.getElementById('skills-grid');
+
+            (data.agents || []).forEach(function (item) {
+              agentsGrid.appendChild(renderCard(item));
+            });
+
+            (data.skills || []).forEach(function (item) {
+              skillsGrid.appendChild(renderCard(item));
+            });
+
+            lucide.createIcons();
+          })
+          .catch(function (err) {
+            console.error('Failed to load agent catalogue:', err);
+          });
+      });
+    }());
+  </script>
 </body>
 </html>

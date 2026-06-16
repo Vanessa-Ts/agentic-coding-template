@@ -6,14 +6,8 @@ body {
     color: #e2e8f0;
     min-height: 100vh;
     display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-main {
-    width: 100%;
-    max-width: 480px;
-    padding: 1.5rem;
+    flex-direction: column;
+    align-items: stretch;
 }
 
 .card {
@@ -80,3 +74,151 @@ h1 {
 }
 
 .link-btn.secondary:hover { background: #3d4268; }
+
+/* ── Hero ──────────────────────────────────────────────── */
+
+.hero {
+    width: 100%;
+    padding: 3rem 1.5rem 2rem;
+}
+
+.hero-inner {
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+.hero-inner h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #f8fafc;
+    margin-bottom: 0.75rem;
+}
+
+.hero-desc {
+    font-size: 1.1rem;
+    color: #94a3b8;
+    line-height: 1.6;
+}
+
+/* ── Catalogue ──────────────────────────────────────────── */
+
+.catalogue {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 1.5rem 3rem;
+    width: 100%;
+}
+
+.cat-section {
+    margin-bottom: 2.5rem;
+}
+
+.cat-section h2 {
+    font-size: 1.25rem;
+    color: #f8fafc;
+    margin-bottom: 1rem;
+}
+
+/* ── Card grid ──────────────────────────────────────────── */
+
+.card-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(3, 1fr);
+    align-items: start;
+}
+
+@media (max-width: 1023px) {
+    .card-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 639px) {
+    .card-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Agent card ─────────────────────────────────────────── */
+
+.agent-card {
+    background: #1e2130;
+    border: 1px solid #2d3148;
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    cursor: pointer;
+    transition: border-color 0.15s;
+    min-height: 9rem;
+}
+
+.agent-card:hover { border-color: #4c6ef5; }
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.card-icon {
+    width: 24px;
+    height: 24px;
+    color: #60a5fa;
+    flex-shrink: 0;
+}
+
+.card-name {
+    font-weight: 600;
+    color: #f8fafc;
+    flex: 1;
+}
+
+.type-agent { background: #1e3a5f; color: #60a5fa; }
+.type-skill { background: #2e1e5f; color: #a78bfa; }
+
+.card-role {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+}
+
+.card-detail {
+    border-top: 1px solid #2d3148;
+    padding-top: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+.connects-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.chip {
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-family: monospace;
+    background: #2d3148;
+    color: #94a3b8;
+}
+
+.chip-on-demand {
+    background: transparent;
+    border: 1px dashed #3d4268;
+    color: #64748b;
+    font-style: italic;
+}
+
+.card-desc-full {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+}
+
+.card-chips-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #475569;
+    margin-bottom: 0.4rem;
+}

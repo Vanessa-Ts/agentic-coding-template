@@ -1,0 +1,142 @@
+{
+  "agents": [
+    {
+      "type": "agent",
+      "name": "planner",
+      "role": "Read-only; writes docs/plans/<feature>.md",
+      "description": "Read-only research agent. Scans CLAUDE.md, existing source files, and any linked spec documents to produce a structured implementation plan at docs/plans/<feature>.md. Identifies the files to create or modify, the commit sequence, and any architectural constraints. Does not write source or test files. Invoke with /plan <feature> before starting any implementation work.",
+      "icon": "map",
+      "connects_to": []
+    },
+    {
+      "type": "agent",
+      "name": "implementer",
+      "role": "Writes src/ + tests/ only; reads plan first",
+      "description": "Code-writing agent that reads the plan file produced by the planner and builds the feature on a feat/<name> branch. Writes only src/ and tests/ — never touches CLAUDE.md, docs/, or config files. Commits models, store, routes, and tests as separate git commits in that order. Invoke with /implement after a plan exists in docs/plans/.",
+      "icon": "code-2",
+      "connects_to": ["planner"]
+    },
+    {
+      "type": "agent",
+      "name": "ai-service-generator",
+      "role": "Specialist implementer for Anthropic SDK / LLM features",
+      "description": "Specialist variant of the implementer for features that call the Anthropic SDK directly. Handles streaming responses via async generators, tool use definitions and dispatch loops, multi-agent orchestration with subagent spawning, and prompt caching headers. Use instead of the general implementer whenever the plan involves direct Claude API calls, MCP server integration, or token-counting logic.",
+      "icon": "bot",
+      "connects_to": []
+    },
+    {
+      "type": "agent",
+      "name": "architecture-reviewer",
+      "role": "Read-only; BCE layer compliance and import dependency flow",
+      "description": "Read-only agent that checks BCE (Boundary-Control-Entity) layer compliance and import dependency direction across the entire codebase. Flags routes importing from other routes, services leaking into model files, and any inward dependency rule violation. Also checks that every router is mounted in main.py and that no circular imports exist. Invoked automatically by the /review skill.",
+      "icon": "layers",
+      "connects_to": []
+    },
+    {
+      "type": "agent",
+      "name": "performance-reviewer",
+      "role": "Read-only; N+1 queries, blocking I/O, async anti-patterns",
+      "description": "Read-only agent that scans for async anti-patterns in FastAPI/Python code: blocking I/O calls inside async functions (file reads, subprocess calls, sync DB clients), N+1 query patterns in ORM loops, large in-memory aggregations, and missing connection pool configuration. Reports file paths and line numbers. Invoked automatically by the /review skill.",
+      "icon": "zap",
+      "connects_to": []
+    },
+    {
+      "type": "agent",
+      "name": "security-reviewer",
+      "role": "Read-only; secrets/input validation/OWASP-lite",
+      "description": "Read-only agent that checks for hardcoded secrets and API keys, insufficient input validation at system boundaries, and OWASP Top-10 vulnerabilities including XSS, SQL/command injection, broken authentication, and insecure direct object references. Also verifies that exception handlers never leak stack traces to clients. Invoked automatically by the /review skill.",
+      "icon": "shield",
+      "connects_to": []
+    }
+  ],
+  "skills": [
+    {
+      "type": "skill",
+      "name": "fastapi-conventions",
+      "role": "Auto-loads for src/app/routes/, models/, main.py",
+      "description": "Injects FastAPI project conventions whenever you edit route handlers, models, or main.py. Enforces: async def on all route handlers, Pydantic v2 method names (.model_dump() / .model_validate(), never .dict()), Depends() injection for every collaborator, exception mapping via @app.exception_handler, and one router per resource mounted in main.py via include_router(). TestClient is forbidden — all tests must use httpx.AsyncClient + ASGITransport.",
+      "icon": "route",
+      "connects_to": []
+    },
+    {
+      "type": "skill",
+      "name": "pytest-patterns",
+      "role": "Auto-loads for tests/, conftest.py",
+      "description": "Injects test conventions when editing files under tests/ or conftest.py. Enforces: httpx.AsyncClient + ASGITransport transport (TestClient is banned), @pytest_asyncio.fixture for async fixtures (not @pytest.fixture), asyncio_mode = auto set in pyproject.toml so no manual event loop management is needed, and pytest.mark.parametrize over loops. Requires a minimum of 3 tests per route: happy path, 422 validation failure, and 404 not found.",
+      "icon": "check-circle",
+      "connects_to": []
+    },
+    {
+      "type": "skill",
+      "name": "uv-workflows",
+      "role": "Auto-loads for pyproject.toml, uv.lock",
+      "description": "Injects dependency management conventions when editing pyproject.toml or uv.lock. All package operations must go through uv add <pkg> (runtime) or uv add --dev <pkg> (dev/test). Blocks pip install, pip3, and poetry add. Never touch uv.lock by hand — always commit both pyproject.toml and uv.lock together. Run tools (pytest, ruff, mypy) directly without a uv run prefix.",
+      "icon": "package",
+      "connects_to": []
+    },
+    {
+      "type": "skill",
+      "name": "infrastructure",
+      "role": "Auto-loads for Dockerfile, docker-compose*, CI workflows, Helm",
+      "description": "Injects infrastructure patterns when editing Dockerfiles, docker-compose files, GitHub Actions workflows, or Helm charts. Covers: multi-stage Docker builds to minimise image size, health check endpoints wired to /health/live and /health/ready, secret injection via environment variables (never baked into images), and deployment readiness probes. Also enforces that the quality gate (ruff, mypy, pytest) runs in CI before any deploy step.",
+      "icon": "server",
+      "connects_to": []
+    },
+    {
+      "type": "skill",
+      "name": "spec-feature",
+      "role": "2-phase interview → docs/specs/<feature>/ before planning",
+      "description": "Runs a structured 2-phase requirements interview before any implementation begins. Phase 1 captures feature intent, user stories, and acceptance criteria. Phase 2 refines scope, identifies edge cases, and surfaces integration constraints. Outputs three documents under docs/specs/<feature>/: requirements.md, design.md, and tasks.md. Run /spec-feature before /plan on any non-trivial feature to avoid scope drift during implementation.",
+      "icon": "clipboard-list",
+      "connects_to": ["planner"]
+    },
+    {
+      "type": "skill",
+      "name": "openapi",
+      "role": "Auto-loads for openapi*.yml/json; spec authoring and codegen",
+      "description": "Injects OpenAPI conventions when editing openapi*.yml or openapi*.json files. Supports spec-first development: validates schema correctness, checks that request/response contracts are consistent, and can generate FastAPI route stubs directly from the spec. Use when the API contract needs to be agreed upon and frozen before implementation starts, or when integrating with external consumers that depend on the schema.",
+      "icon": "file-json",
+      "connects_to": []
+    },
+    {
+      "type": "skill",
+      "name": "review",
+      "role": "Inline BCE + FastAPI + Python checklist for ad-hoc code review",
+      "description": "Invokes architecture-reviewer, performance-reviewer, and security-reviewer in parallel, then aggregates their findings into a single report. Runs the full three-layer quality check: BCE layer compliance, async performance anti-patterns, and security vulnerabilities. Use /review on any branch before opening a pull request. Pass --comment to post findings as inline PR comments, or --fix to apply safe fixes automatically.",
+      "icon": "search",
+      "connects_to": ["architecture-reviewer", "performance-reviewer", "security-reviewer"]
+    },
+    {
+      "type": "skill",
+      "name": "doc",
+      "role": "Reads source → writes project docs into docs/",
+      "description": "Reads the current source tree — routes, models, services, and config — and writes human-readable documentation into docs/. Useful for generating onboarding guides, architecture overviews, or API reference pages. Does not modify any source files. Output format is Markdown. Run after a feature is merged to keep documentation in sync with the implementation.",
+      "icon": "book-open",
+      "connects_to": []
+    },
+    {
+      "type": "skill",
+      "name": "blog-post",
+      "role": "Audience interview → structured technical blog post",
+      "description": "Runs an audience and topic scoping interview, then produces a structured technical blog post draft. The interview establishes the target reader, the key insight to convey, and the appropriate depth. Output is a Markdown draft with intro, background context, implementation walkthrough with code snippets, and a conclusion. Written to docs/blog/<slug>.md.",
+      "icon": "newspaper",
+      "connects_to": []
+    },
+    {
+      "type": "skill",
+      "name": "frontend",
+      "role": "Auto-loads for *.html, ui/**; Jinja2, Tailwind, HTMX patterns",
+      "description": "Injects frontend conventions when editing HTML files or files under ui/**. Covers Jinja2 template syntax and template inheritance, Tailwind CSS utility class composition, and HTMX attribute patterns (hx-get, hx-post, hx-swap, hx-target) for dynamic updates without a bundled JavaScript framework. Also enforces that user-supplied values rendered into templates are escaped to prevent XSS.",
+      "icon": "layout-dashboard",
+      "connects_to": []
+    },
+    {
+      "type": "skill",
+      "name": "infografik",
+      "role": "AI image generation via Hugging Face FLUX.1 → docs/assets/",
+      "description": "Generates images via the Hugging Face FLUX.1 diffusion model and saves the output to docs/assets/. Use for architecture diagrams, data flow illustrations, or feature concept art. Requires a Hugging Face API token set in the environment. Prompts should describe the technical concept precisely — the model is not architecture-aware so spatial relationships need to be explicit in the prompt text.",
+      "icon": "image",
+      "connects_to": []
+    }
+  ]
+}
