@@ -8,8 +8,6 @@ Instructions for the planner agent:
 - Identify at least two implementation approaches; choose one and state why in the `## Approach` section
 - Read all relevant existing source files before writing
 
-If `$ARGUMENTS` ends with `--opus`, use the claude-opus-4-8 model for this planning session (more complex features that need deeper reasoning).
-
 After the plan is written, print:
 ```
 Plan written to docs/plans/$ARGUMENTS.md
