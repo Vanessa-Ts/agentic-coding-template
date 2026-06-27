@@ -111,8 +111,17 @@ Quality is the priority; cost is managed through these strategies, not by downgr
 | Checklist-based reviews | Bounded reasoning via fixed checklists (7-8 points each) | Agent system prompts |
 | Hooks | Pre/post tool validation prevents wasted token loops | settings.json `hooks` config |
 | Reviewer staggering | Sequential reviewer execution prevents Opus rate-limit retry loops | `/review` command |
+| Sonnet fallback | Parent session triages complexity; passes `model: sonnet` for simple tasks | `/plan`, `/review` commands |
 
 **Observability**: Use `/usage` to view per-agent token consumption after any session.
+
+### Model fallback
+
+All Opus agents (planner, ai-service-generator, reviewers) support a Sonnet fallback for simple tasks. The parent session assesses complexity before spawning and passes `model: sonnet` when the task is straightforward. The implementer always uses Sonnet.
+
+**Complexity signals for Opus** (default): cross-cutting concerns, ambiguous specs, multi-module changes, architectural decisions, dependency upgrades, security-sensitive changes, large diffs (>100 lines), new routes/models.
+
+**Complexity signals for Sonnet fallback**: single-file changes, routine CRUD, test gap fills, config-only or documentation changes, small diffs (<100 lines), single-module refactors, typo/naming fixes.
 
 ---
 
