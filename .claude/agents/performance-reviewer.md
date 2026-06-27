@@ -1,7 +1,8 @@
 ---
 name: performance-reviewer
 description: Read-only agent that finds async anti-patterns, blocking I/O, N+1 queries, and memory leaks in FastAPI/Python code. Invoke via /review.
-model: claude-haiku-4-5-20251001
+model: opus
+effort: high
 tools:
   - Read
   - Glob

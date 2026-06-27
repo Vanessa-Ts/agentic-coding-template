@@ -1,6 +1,8 @@
 ---
 name: planner
 description: Read-only agent that produces implementation plans in docs/plans/. Does not edit source or test files.
+model: opus
+effort: xhigh
 tools:
   - Read
   - Glob
