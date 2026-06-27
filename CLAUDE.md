@@ -97,6 +97,25 @@ The `pre_push_quality_gate` hook enforces this inline on every `git push`.
 
 ---
 
+## Token-saving strategies
+
+Quality is the priority; cost is managed through these strategies, not by downgrading models.
+
+| Strategy | Mechanism | Scope |
+|---|---|---|
+| Model tiering | Opus for reasoning-heavy agents (planner, ai-service-generator, reviewers); Sonnet for implementer | Per-agent `model` field |
+| Effort tuning | `xhigh` for planner, `high` for reviewers and ai-service-generator, default for implementer | Per-agent `effort` field |
+| Autocompact | Context window compacted at 80% capacity | `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=80` in settings.json |
+| Tool restrictions | Reviewers limited to Read, Glob, Grep, restricted Bash | Agent `tools` field |
+| Bash whitelisting | Reviewers restricted to `git diff/log` and `rg` only | Agent system prompts |
+| Checklist-based reviews | Bounded reasoning via fixed checklists (7-8 points each) | Agent system prompts |
+| Hooks | Pre/post tool validation prevents wasted token loops | settings.json `hooks` config |
+| Reviewer staggering | Sequential reviewer execution prevents Opus rate-limit retry loops | `/review` command |
+
+**Observability**: Use `/usage` to view per-agent token consumption after any session.
+
+---
+
 ## Agent / Skill / Command map
 
 | Artifact | Purpose |
@@ -120,7 +139,7 @@ The `pre_push_quality_gate` hook enforces this inline on every `git push`.
 | `infografik` skill | AI image generation via Hugging Face FLUX.1 → `docs/assets/` |
 | `/plan <feature>` | Invokes planner → `docs/plans/<feature>.md` |
 | `/implement` | Reads latest plan, creates `feat/<name>` branch, builds |
-| `/review` | Invokes architecture + performance + security reviewers in parallel |
+| `/review` | Invokes architecture + performance + security reviewers sequentially |
 | `/ship` | Full quality gate + `gh pr create` |
 
 ---
@@ -135,4 +154,6 @@ that can be reused or wrapped. Document source + license for every artifact in t
 ## /compact preservation
 
 When context is compacted, preserve: current branch name, latest plan file path, any open
-violations from the last `/review` run, and the phase being implemented.
+violations from the last `/review` run, the phase being implemented, current agent model
+assignments (planner=opus, ai-service-generator=opus, reviewers=opus, implementer=sonnet),
+and cumulative token usage from the session.
