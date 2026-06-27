@@ -1,4 +1,6 @@
-Invoke **architecture-reviewer**, **performance-reviewer**, and **security-reviewer** in parallel on the current branch diff.
+Invoke **architecture-reviewer**, **performance-reviewer**, and **security-reviewer** sequentially (in that order) on the current branch diff.
+
+First invoke architecture-reviewer and wait for it to complete. Then invoke performance-reviewer and wait for it to complete. Then invoke security-reviewer. This prevents Opus rate-limit throttling on Pro plan, avoiding costly retry loops.
 
 All three agents must:
 - Run `git diff main...HEAD` to see all changes
