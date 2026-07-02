@@ -123,6 +123,8 @@ All Opus agents (planner, ai-service-generator, reviewers) support a Sonnet fall
 
 **Complexity signals for Sonnet fallback**: single-file changes, routine CRUD, test gap fills, config-only or documentation changes, small diffs (<100 lines), single-module refactors, typo/naming fixes.
 
+This applies to `/plan`, `/review`, and any manual invocation of an Opus agent (e.g., ai-service-generator). When spawning an Opus agent directly, assess complexity the same way and pass `model: sonnet` if the task is straightforward.
+
 ---
 
 ## Agent / Skill / Command map
