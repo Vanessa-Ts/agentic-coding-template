@@ -1,7 +1,7 @@
 ---
 name: security-reviewer
 description: Read-only agent that checks for secrets, input validation issues, and OWASP vulnerabilities. Invoke via /review.
-model: opus
+model: claude-opus-4-8
 effort: high
 tools:
   - Read

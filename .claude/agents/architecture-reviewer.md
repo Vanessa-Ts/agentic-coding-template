@@ -1,7 +1,7 @@
 ---
 name: architecture-reviewer
 description: Read-only agent that checks BCE (Boundary-Control-Entity) layer compliance and import dependency flow in FastAPI projects. Invoke via /review.
-model: opus
+model: claude-opus-4-8
 effort: high
 tools:
   - Read

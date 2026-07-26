@@ -1,7 +1,7 @@
 Read CLAUDE.md, then invoke the **planner** agent to produce an implementation plan for the feature named `$ARGUMENTS`.
 
 Before invoking the planner agent, assess task complexity:
-- **Use Sonnet** (pass `model: sonnet` to the agent) for: single-file changes, routine CRUD, test gap fills, single-module refactors, typo/naming fixes.
+- **Use Sonnet** (pass `model: claude-sonnet-4-6` to the agent) for: single-file changes, routine CRUD, test gap fills, single-module refactors, typo/naming fixes.
 - **Use Opus** (default, no override needed) for: cross-cutting concerns, ambiguous specs, multi-module changes, architectural decisions, dependency upgrades.
 
 Instructions for the planner agent:

@@ -1,7 +1,7 @@
 Invoke **architecture-reviewer**, **performance-reviewer**, and **security-reviewer** sequentially (in that order) on the current branch diff.
 
 Before invoking the reviewers, assess the diff complexity once and apply the same model to all three:
-- **Use Sonnet** (pass `model: sonnet` to all three agents) for: small diffs (<100 lines), single-file changes, config-only changes, documentation updates.
+- **Use Sonnet** (pass `model: claude-sonnet-4-6` to all three agents) for: small diffs (<100 lines), single-file changes, config-only changes, documentation updates.
 - **Use Opus** (default, no override needed) for: large diffs, multi-file changes, new routes/models, security-sensitive changes, architectural changes.
 
 First invoke architecture-reviewer and wait for it to complete. Then invoke performance-reviewer and wait for it to complete. Then invoke security-reviewer. This prevents Opus rate-limit throttling on Pro plan, avoiding costly retry loops.
