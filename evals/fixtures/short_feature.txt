@@ -1,1 +1,0 @@
-Add a health-check endpoint at GET /ping that returns 200 with body {"status": "ok"}. No authentication required.
