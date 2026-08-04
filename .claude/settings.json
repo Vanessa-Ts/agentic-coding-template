@@ -1,5 +1,8 @@
 {
   "model": "claude-sonnet-4-6",
+  "enabledPlugins": {
+    "mattpocock-skills@claude-plugins-official": true
+  },
   "env": {
     "UV_NO_SYNC": "1",
     "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "80"
@@ -42,10 +45,6 @@
           {
             "type": "command",
             "command": "python3 .claude/hooks/autoformat_python.py"
-          },
-          {
-            "type": "command",
-            "command": "python3 .claude/hooks/lint_claude_md.py"
           }
         ]
       }
