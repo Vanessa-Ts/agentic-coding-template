@@ -114,7 +114,7 @@ venv.bak/
 # Claude
 .claude/settings.local.json
 .claude/state/
-docs/plans/
+plans/
 docs/specs/
 
 # Project-specific
